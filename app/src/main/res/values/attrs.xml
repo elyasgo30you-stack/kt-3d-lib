@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Block3DView">
+
+        <attr name="blockName" format="string" />
+
+        <attr name="blockWidth3D" format="float" />
+        <attr name="blockHeight3D" format="float" />
+        <attr name="blockDepth3D" format="float" />
+
+        <attr name="blockX3D" format="float" />
+        <attr name="blockY3D" format="float" />
+        <attr name="blockZ3D" format="float" />
+
+        <attr name="blockColorName" format="string" />
+
+    </declare-styleable>
+
+</resources>
