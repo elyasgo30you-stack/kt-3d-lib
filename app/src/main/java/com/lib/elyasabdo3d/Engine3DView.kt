@@ -24,11 +24,25 @@ class Engine3DView(context: Context) : GLSurfaceView(context) {
 
     fun addModel(model: Model3D) {
         renderer3D.addModel(model)
+
+        world3d.state.setPosition(
+            name = model.name,
+            x = model.x,
+            y = model.y,
+            z = model.z
+        )
     }
 
     fun setPlayer(model: Model3D) {
         player = model
         renderer3D.player = model
+
+        world3d.state.setPosition(
+            name = model.name,
+            x = model.x,
+            y = model.y,
+            z = model.z
+        )
     }
 
     fun addKeyFrame(keyFrame: KeyFrame3D) {
@@ -62,6 +76,13 @@ class Engine3DView(context: Context) : GLSurfaceView(context) {
                         it.x += dx / 100f * speed * 0.01f
                         it.z += dy / 100f * speed * 0.01f
                         it.currentAnimation = "walk"
+
+                        world3d.state.setPosition(
+                            name = it.name,
+                            x = it.x,
+                            y = it.y,
+                            z = it.z
+                        )
                     }
                 } else {
                     val dx = event.x - lastX
@@ -106,7 +127,7 @@ data class KeyFrame3D(
 
 class NativeRenderer(
     private val context: Context
-) : Renderer {
+) : GLSurfaceView.Renderer {
 
     private val models = mutableListOf<Model3D>()
     private val keyFrames = mutableListOf<KeyFrame3D>()
@@ -134,11 +155,27 @@ class NativeRenderer(
     override fun onDrawFrame(gl: javax.microedition.khronos.opengles.GL10?) {
         player?.let {
             PlayerLogic.update(context, it)
+
+            world3d.state.setPosition(
+                name = it.name,
+                x = it.x,
+                y = it.y,
+                z = it.z
+            )
         }
+
+        world3d.collision.checkAll()
 
         Native3DEngine.nativeBeginFrame(cameraYaw, cameraPitch)
 
         for (model in models) {
+            world3d.state.setPosition(
+                name = model.name,
+                x = model.x,
+                y = model.y,
+                z = model.z
+            )
+
             Native3DEngine.nativeDrawModel(
                 model.name,
                 model.path,
@@ -156,6 +193,13 @@ class NativeRenderer(
     fun addModel(model: Model3D) {
         models.add(model)
         ModelLoaderNative.loadModel(model.name, model.path)
+
+        world3d.state.setPosition(
+            name = model.name,
+            x = model.x,
+            y = model.y,
+            z = model.z
+        )
     }
 
     fun addKeyFrame(frame: KeyFrame3D) {
