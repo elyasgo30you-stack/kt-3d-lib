@@ -6,6 +6,9 @@ import android.widget.FrameLayout
 
 object world3d {
 
+    val state: World3DState = World3DState()
+    val collision: World3DCollision = World3DCollision(state)
+
     private var engine: Engine3DView? = null
     private var player: Model3D? = null
 
@@ -43,6 +46,13 @@ object world3d {
         view.addModel(defaultPlayer)
         view.setPlayer(defaultPlayer)
 
+        state.setPosition(
+            name = "player",
+            x = defaultPlayer.x,
+            y = defaultPlayer.y,
+            z = defaultPlayer.z
+        )
+
         return view
     }
 
@@ -60,10 +70,18 @@ object world3d {
         engine?.addModel(model)
         engine?.setPlayer(model)
 
+        state.setPosition(
+            name = "player",
+            x = model.x,
+            y = model.y,
+            z = model.z
+        )
+
         return model
     }
 
     object new {
+
         fun model(
             name: String,
             path: String,
@@ -72,8 +90,24 @@ object world3d {
             z: Float = 0f,
             scale: Float = 1f
         ): Model3D {
-            val model = Model3D(name, path, x, y, z, scale)
+            val model = Model3D(
+                name = name,
+                path = path,
+                x = x,
+                y = y,
+                z = z,
+                scale = scale
+            )
+
             engine?.addModel(model)
+
+            state.setPosition(
+                name = name,
+                x = x,
+                y = y,
+                z = z
+            )
+
             return model
         }
 
@@ -84,8 +118,16 @@ object world3d {
             action: String,
             file: String? = null
         ): KeyFrame3D {
-            val frame = KeyFrame3D(modelName, fromSec, toSec, action, file)
+            val frame = KeyFrame3D(
+                modelName = modelName,
+                fromSec = fromSec,
+                toSec = toSec,
+                action = action,
+                file = file
+            )
+
             engine?.addKeyFrame(frame)
+
             return frame
         }
     }
