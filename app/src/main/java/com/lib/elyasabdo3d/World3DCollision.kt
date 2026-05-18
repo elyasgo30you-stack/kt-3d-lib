@@ -8,7 +8,9 @@ class World3DCollision(
         val a: String,
         val b: String,
         val radius: Float,
-        val callback: () -> Unit
+        val once: Boolean,
+        val callback: () -> Unit,
+        var fired: Boolean = false
     )
 
     private val callbacks = mutableListOf<NearCallback>()
@@ -18,36 +20,45 @@ class World3DCollision(
         val posB = state.getPosition(b) ?: return Float.MAX_VALUE
 
         return World3DNativeMath.distance3D(
-            posA.x,
-            posA.y,
-            posA.z,
-            posB.x,
-            posB.y,
-            posB.z
+            ax = posA.x,
+            ay = posA.y,
+            az = posA.z,
+            bx = posB.x,
+            by = posB.y,
+            bz = posB.z
         )
     }
 
     fun isNear(a: String, b: String, radius: Float): Boolean {
+        if (radius < 0f) return false
+
         val posA = state.getPosition(a) ?: return false
         val posB = state.getPosition(b) ?: return false
 
         return World3DNativeMath.isNear3D(
-            posA.x,
-            posA.y,
-            posA.z,
-            posB.x,
-            posB.y,
-            posB.z,
-            radius
+            ax = posA.x,
+            ay = posA.y,
+            az = posA.z,
+            bx = posB.x,
+            by = posB.y,
+            bz = posB.z,
+            radius = radius
         )
     }
 
-    fun onNear(a: String, b: String, radius: Float, callback: () -> Unit) {
+    fun onNear(
+        a: String,
+        b: String,
+        radius: Float,
+        once: Boolean = false,
+        callback: () -> Unit
+    ) {
         callbacks.add(
             NearCallback(
                 a = a,
                 b = b,
                 radius = radius,
+                once = once,
                 callback = callback
             )
         )
@@ -55,8 +66,16 @@ class World3DCollision(
 
     fun checkAll() {
         for (item in callbacks) {
+            if (item.once && item.fired) {
+                continue
+            }
+
             if (isNear(item.a, item.b, item.radius)) {
                 item.callback.invoke()
+
+                if (item.once) {
+                    item.fired = true
+                }
             }
         }
     }
@@ -64,30 +83,4 @@ class World3DCollision(
     fun clearCallbacks() {
         callbacks.clear()
     }
-}
-
-object World3DNativeMath {
-
-    init {
-        System.loadLibrary("elyasabdo3d")
-    }
-
-    external fun distance3D(
-        ax: Float,
-        ay: Float,
-        az: Float,
-        bx: Float,
-        by: Float,
-        bz: Float
-    ): Float
-
-    external fun isNear3D(
-        ax: Float,
-        ay: Float,
-        az: Float,
-        bx: Float,
-        by: Float,
-        bz: Float,
-        radius: Float
-    ): Boolean
 }
