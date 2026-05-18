@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="elyasabdo3d_default_block_name">Block</string>
+    <string name="elyasabdo3d_default_block_color">white</string>
+
+    <integer name="elyasabdo3d_default_block_width">1</integer>
+    <integer name="elyasabdo3d_default_block_height">1</integer>
+    <integer name="elyasabdo3d_default_block_depth">1</integer>
+
+    <integer name="elyasabdo3d_default_block_x">0</integer>
+    <integer name="elyasabdo3d_default_block_y">0</integer>
+    <integer name="elyasabdo3d_default_block_z">0</integer>
+
+</resources>
