@@ -5,7 +5,8 @@ project(elyasabdo3d)
 add_library(
         elyasabdo3d
         SHARED
-        native3d.cpp
+        native_engine.cpp
+        World3DNativeMath.cpp
 )
 
 find_library(
@@ -15,5 +16,6 @@ find_library(
 
 target_link_libraries(
         elyasabdo3d
+        GLESv2
         ${log-lib}
 )
